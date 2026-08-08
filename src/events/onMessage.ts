@@ -1,13 +1,8 @@
 import { Events, Message, DMChannel, type Client } from 'discord.js';
-import { extractMetadataFromBuffer } from '../lib/metadata';
-import { addToCache } from '../lib/cache';
-import { SCAN_LIMIT_BYTES, DM_ALLOWED_USER_IDS, DM_RESPONSE_MESSAGE, ENV_MOD_DEFAULTS, GIF_SOURCE_DOMAINS } from '../lib/config';
+import { DM_ALLOWED_USER_IDS, DM_RESPONSE_MESSAGE, ENV_MOD_DEFAULTS, GIF_SOURCE_DOMAINS } from '../lib/config';
 import { getGuildSetting, getModeration } from '../lib/guild-settings';
 import { trackMessage, checkCrossPosting, isGibberish, calculateScamScore, detectDisguisedExecutable, checkEmbedImages, algoSpeakScore, instantBan, alertAdmins, isTrusted, isMediaMessage, hasHoneypotRole, checkMediaVelocity, checkMentionSpam, isRecentJoin, mediaRaidThreshold } from '../lib/security';
 import { isUserBanned, isPatternBanned, recordBan, recordPattern, checkWordPatterns } from '../lib/ban-registry';
-
-const NUMBER_EMOJIS = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣'];
-const processedUrls = new Set<string>();
 
 export function registerMessageEvents(client: Client): void {
   client.on(Events.MessageCreate, async (message: Message) => {
@@ -225,49 +220,5 @@ export function registerMessageEvents(client: Client): void {
       }
     }
 
-    // ── PNG metadata processing (independent of security) ───────────────────────
-    if (!getGuildSetting(message.guildId!, 'metadata', true)) return;
-    const pngAttachments = message.attachments.filter(
-      a => a.name.toLowerCase().endsWith('.png') && a.size < SCAN_LIMIT_BYTES
-    );
-    if (pngAttachments.size === 0) return;
-
-    const first = pngAttachments.first()!;
-
-    // PluralKit: wait briefly then confirm message still exists
-    if (!message.webhookId) {
-      await new Promise(r => setTimeout(r, 500));
-      const stillThere = await message.channel.messages.fetch(message.id).catch(() => null);
-      if (!stillThere) return;
-    }
-
-    if (processedUrls.has(first.url)) return;
-    processedUrls.add(first.url);
-    if (processedUrls.size > 500) processedUrls.clear();
-
-    try {
-      const imagesWithMeta: Array<{ name: string; url: string; meta: Record<string, any> }> = [];
-
-      for (const att of pngAttachments.values()) {
-        const res = await fetch(att.url);
-        const buf = Buffer.from(await res.arrayBuffer());
-        const result = await extractMetadataFromBuffer(buf, 'image/png', att.name, att.size, new Date().toISOString());
-        if (result.ai && Object.keys(result.ai).length > 0) {
-          imagesWithMeta.push({ name: att.name, url: att.url, meta: result });
-        }
-      }
-
-      if (imagesWithMeta.length === 0) return;
-
-      addToCache(message.id, imagesWithMeta);
-
-      if (imagesWithMeta.length <= 5) {
-        for (let i = 0; i < imagesWithMeta.length; i++) await message.react(NUMBER_EMOJIS[i]);
-      } else {
-        await message.react('📦');
-      }
-    } catch (err) {
-      console.error('onMessage error:', err);
-    }
   });
 }

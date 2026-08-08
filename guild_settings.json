@@ -1,13 +1,10 @@
 {
-  "_comment": "Per-server feature configuration. Guild ID as key, features as values.",
+  "_comment": "Per-server configuration. _defaults applies to all guilds; per-guild entries override.",
   "_defaults": {
-    "ask": false,
-    "metadata": true,
-    "describe": true,
-    "techsupport": false,
-    "coder": false,
     "fun_commands": true,
     "qotd": false,
-    "interact": true
-  }
+    "interact": true,
+    "security": true
+  },
+  "guilds": {}
 }
