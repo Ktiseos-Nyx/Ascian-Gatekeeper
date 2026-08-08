@@ -5,11 +5,13 @@ import { Message, GuildMember, Guild, TextChannel, EmbedBuilder, Colors, Permiss
 import type { ResolvedModConfig } from './settings-types';
 import { BLOCKED_IMAGE_DOMAINS } from './config';
 
-// ── Webhook author resolution (PluralKit) ────────────────────────────────────
-// Webhook-proxied messages (e.g., PluralKit) have message.author as the webhook
-// actor, not the real guild member. The webhook name is set to the proxied user's
-// display name, optionally with a 5-char hash suffix like "Name (abcde)".
-// We strip that suffix and look up the matching guild member.
+// ── Webhook author resolution (PluralKit / Tupperbox) ─────────────────────
+// Webhook-proxied messages have message.author as the webhook actor, not the
+// real guild member. The webhook name is set to the proxied user's display name.
+// We strip proxy-bot suffixes and look up the matching guild member.
+//
+// Known proxy-bot application IDs (for optional webhook-owner verification):
+//   PluralKit: 466378653216014359    Tupperbox: 431544605209788416
 export function resolveWebhookAuthor(
   message: Message,
 ): { id: string; member: GuildMember } | null {
@@ -18,7 +20,15 @@ export function resolveWebhookAuthor(
   const name = message.author.username;
   if (!name) return null;
 
-  const baseName = name.replace(/\s*\([a-z0-9]{5}\)$/, '').trim();
+  // Strip common proxy-bot suffixes:
+  //   PluralKit:  "Name (abcde)"  — 5-char hash in parens
+  //   Tupperbox:  "Name [tag]"    — bracket format
+  const baseName = name
+    .replace(/\s*\([a-z0-9]{5}\)$/, '')
+    .replace(/\s*\[.+?\]$/, '')
+    .trim();
+
+  if (!baseName) return null;
 
   const member = message.guild.members.cache.find(
     m => m.displayName === name || m.displayName === baseName
