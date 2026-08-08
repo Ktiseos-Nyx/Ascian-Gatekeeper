@@ -285,7 +285,7 @@ opening one.
 
 
 **Support:**
-- AI-free space — Earth and Dusk: <https://discord.gg/5t2kYxt7An>
+- AI-free space — Under Rug Swept Misfits: <https://discord.gg/5t2kYxt7An>
 
 
 ---
