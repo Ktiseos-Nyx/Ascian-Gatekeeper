@@ -81,4 +81,6 @@ export const ENV_MOD_DEFAULTS: EnvModDefaults = {
   mediaSpamWindowSec: MEDIA_SPAM_WINDOW_SEC,
   largeMediaTypes: LARGE_MEDIA_TYPES,
   honeypotMode: HONEYPOT_MODE,
+  gifSourceDomains: GIF_SOURCE_DOMAINS,
+  blockedImageDomains: [...BLOCKED_IMAGE_DOMAINS],
 };
