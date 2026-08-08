@@ -33,6 +33,7 @@ export function registerMessageEvents(client: Client): void {
 
     if (securityEnabled && !isTrusted(message, mod)) {
       const who = effectiveAuthor(message);
+      if (!who) return; // unresolvable webhook (server announcements, integrations)
       // ── Known banned user ──────────────────────────────────────────────────
       const knownBan = isUserBanned(who.id);
       if (knownBan) {

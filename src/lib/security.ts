@@ -472,8 +472,10 @@ export function isTrusted(message: Message, cfg: ResolvedModConfig): boolean {
   return false;
 }
 
-export function effectiveAuthor(message: Message): { id: string; member: GuildMember | null } {
-  const resolved = resolveWebhookAuthor(message);
-  if (resolved) return resolved;
+export function effectiveAuthor(message: Message): { id: string; member: GuildMember | null } | null {
+  if (message.webhookId) {
+    const resolved = resolveWebhookAuthor(message);
+    return resolved ?? null; // unresolvable webhook → skip security
+  }
   return { id: message.author.id, member: message.member ?? null };
 }
