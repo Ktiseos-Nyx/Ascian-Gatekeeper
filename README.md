@@ -1,14 +1,16 @@
-# Ascian-Gatekeeper 
+# Ascian Gatekeeper
 
-Everything you never wanted in a discord bot, moderation, honeypot, fun commands. A Community bot for the people, with the flair of fandom and the nightmares of the Ancients. Currently under heavy-redevelopment to strip the metadata and AI commands. This bot is not for the faint of heart, if you've ever considered visiting a volcano or touching squapes - this bot is for you and your kin.  Either that or you're just looking for a community lead bot that's janky and is run by the most neurodivergent dev on the planet.
-
+A Discord bot focused on server security and community fun. Moderation, anti-scam
+detection, honeypot roles, cross-server ban registry, and fun commands — with the flair
+of fandom and the nightmares of the Ancients. If you've ever considered visiting a
+volcano or touching squapes, this bot is for you and your kin. Either that or you're
+just looking for a community bot run by the most neurodivergent dev on the planet.
 
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/OCA5uC?referralCode=EQxw4P&utm_medium=integration&utm_source=template&utm_campaign=generic)
 
 [![Twitch](https://img.shields.io/badge/Twitch-Follow%20on%20Twitch-9146FF?logo=twitch&style=for-the-badge)](https://twitch.tv/duskfallcrew)
 
-[![Support us on Ko-fi](https://img.shields.io/badge/Support%20us%20on-Ko--Fi-FF5E5B?style=for-the-badge&logo=kofi)](https://ko-fi.com/duskfallcrew) 
-
+[![Support us on Ko-fi](https://img.shields.io/badge/Support%20us%20on-Ko--Fi-FF5E5B?style=for-the-badge&logo=kofi)](https://ko-fi.com/duskfallcrew)
 
 ## 📑 Table of Contents
 
@@ -45,7 +47,6 @@ Everything you never wanted in a discord bot, moderation, honeypot, fun commands
 - ⚙️ **`/settings` panel** — admins toggle features and configure moderation routing per server, no bot-owner involvement
 - 🎛️ Set the alert channel, trusted roles/users, monitored channels, and catcher role — all per server
 
-
 ### Fun & utility
 
 - 🎲 `/decide`, `/poll`, `/wildcard`, `/goodnight`, `/interact`
@@ -62,23 +63,20 @@ This is a **Node.js / TypeScript** project (Node 22+).
 
 ```bash
 # Clone and install
-git clone https://github.com/Ktiseos-Nyx/PromptInspectorBot.git
-cd PromptInspectorBot
+git clone https://github.com/Ktiseos-Nyx/Ascian-Gatekeeper.git
+cd Ascian-Gatekeeper
 npm install
 
 # Configure
 cp config.example.toml config.toml   # optional; env vars take precedence
 # Put at least BOT_TOKEN in a .env file
 
-# Run in dev (ts-node)
+# Run in dev (tsx)
 npm run dev
 
 # Or build + run compiled
 npm run build
 npm start
-
-# Tests
-npm test
 ```
 
 </details>
@@ -87,12 +85,12 @@ npm test
 <summary><b>Docker</b></summary>
 
 ```bash
-docker build -t prompt-inspector-bot .
+docker build -t ascian-gatekeeper .
 
 # Mount a volume so persistent data survives restarts (see Data & Persistence)
 docker run -d --env-file .env \
-  -e DATA_DIR=/data -v prompt-inspector-data:/data \
-  prompt-inspector-bot
+  -e DATA_DIR=/data -v ascian-gatekeeper-data:/data \
+  ascian-gatekeeper
 ```
 
 </details>
@@ -111,7 +109,6 @@ docker run -d --env-file .env \
 
 ```env
 BOT_TOKEN=your_discord_bot_token
-
 
 # Recommended on hosted/ephemeral platforms
 DATA_DIR=/data
@@ -144,7 +141,8 @@ Run **`/settings`** (requires **Manage Server**) to open an interactive panel. I
 
 | Page | What you configure |
 | ---- | ------------------ |
-| **Moderation** | Anti-scam on/off, alert channel, trusted roles, monitored channels, catcher role |
+| **Moderation** | Anti-scam on/off, alert channel, monitored channels, catcher role |
+| **Trust** | Trusted roles and users (skipped by anti-scam) |
 | **Fun** | Toggle fun commands, `/interact`, QOTD |
 
 Everything is per server and persists immediately. Where a server hasn't set a value, the
@@ -154,12 +152,21 @@ bot falls back to the global environment defaults.
 
 ## How to Use
 
-
 ### Moderation & reports
 
 - Automated moderation runs in monitored servers when **Anti-scam** is enabled.
 - `/report file <user> <reason>` — members report bad actors; enough unique reports auto-times-out the target and alerts mods.
 - `/banregistry` — mods view/manage the cross-server ban + pattern registry.
+
+### Fun commands
+
+- `/decide <option1> <option2>` — randomly pick between options
+- `/poll <question> [option-a] [option-b]` — run a poll
+- `/wildcard` — generate a random art prompt
+- `/interact <action> <user>` — hug, poke, taunt, pat, or high-five someone
+- `/goodnight` — send a goodnight message
+- `/remind set <time> <message>` — set a reminder (e.g. `5m`, `2h`, `1d`, `1wk`)
+- `/qotd setup <channel>` — set up a Question of the Day channel
 
 ---
 
@@ -221,13 +228,22 @@ Resolution order: environment variable → `config.toml` → built-in default.
 BOT_TOKEN=...
 ALLOWED_GUILD_IDS=123,456          # empty = run anywhere
 MONITORED_CHANNEL_IDS=             # global fallback; prefer per-server /settings
-SCAN_LIMIT_BYTES=10485760          # 10 MB
 
 # Moderation routing (global fallback; per-server values set via /settings win)
 ADMIN_CHANNEL_IDS=123,456          # where alerts go
 TRUSTED_USER_IDS=123,456
 CATCHER_ROLE_ID=...
 BLOCKED_IMAGE_DOMAINS=imgur.com    # optional; blocklisted image hosts checked on embed links
+
+# Media spam thresholds
+MEDIA_SPAM_CHANNELS=4              # channels for any-media track
+MEDIA_SPAM_SAME_CHANNELS=3         # channels for identity track
+MEDIA_SPAM_WINDOW_SEC=120          # velocity window in seconds
+LARGE_MEDIA_TYPES=image/gif        # types treated as raid-risky on direct upload
+HONEYPOT_MODE=crosspost            # off | crosspost | strict
+
+# GIF source domains (links treated as media for velocity checks)
+GIF_SOURCE_DOMAINS=tenor.com,giphy.com
 
 # Persistence
 DATA_DIR=/data                     # set to a mounted volume on hosted deploys
@@ -239,7 +255,7 @@ DATA_DIR=/data                     # set to a mounted volume on hosted deploys
 
 ## Permissions
 
-**Required:** View Channel, Send Messages, Read Message History, Add Reactions, Attach Files.
+**Required:** View Channel, Send Messages, Read Message History.
 
 **For moderation:** Ban Members (bot alerts if missing instead of silently failing), Moderate Members (timeouts), Manage Messages.
 
@@ -253,6 +269,7 @@ DATA_DIR=/data                     # set to a mounted volume on hosted deploys
 - **Settings reset after a redeploy** → you're on an ephemeral host without a volume. Set `DATA_DIR` to a mounted volume (see [Data & Persistence](#data--persistence-important-for-hosted-deploys)).
 - **Anti-scam catching a legit user** → add them to trusted users/roles via `/settings`; owners are always trusted.
 - **Alerts going nowhere** → set the alert channel in `/settings` (or `ADMIN_CHANNEL_IDS` as a global fallback).
+- **Bot leaves your server on startup** → your server ID isn't in `ALLOWED_GUILD_IDS`. Add it or clear the list for open mode.
 
 </details>
 
@@ -271,8 +288,7 @@ If you fork this bot, update anything personal to the upstream project:
   bot user in the Discord Developer Portal does not require code changes.
 - **Persistence** — set `DATA_DIR` (and a volume) for your own deployment.
 
-Contributions back via pull request are welcome. Run `npm test` and `npm run build` before
-opening one.
+Contributions back via pull request are welcome. Run `npm run build` before opening one.
 
 </details>
 
@@ -283,15 +299,12 @@ opening one.
 - 📄 **[Privacy Policy](PRIVACY.md)** — what we process and what we keep
 - 📜 **[Terms of Service](TERMS_OF_SERVICE.md)** — the rules
 
-
 **Support:**
-- AI-free space — Under Rug Swept Misfits: <https://discord.gg/5t2kYxt7An>
-
+- Under Rug Swept Misfits: https://discord.gg/5t2kYxt7An
 
 ---
 
 ## Credits
 
-- **Icon:** <a href="https://www.flaticon.com/free-icons/flower" title="flower icons">Flower icons created by Icongeek26 - Flaticon</a> (base icon, modified for this bot).
-- Base bot was a fork of [PromptInspectorBot](https://github.com/sALTaccount/PromptInspectorBot); since rewritten in TypeScript with substantial added features.
-- Current Bot is a stripped fork of [KNX Tools](https://github.com/Ktiseos-Nyx/PromptInspectorBot); rewritten in Typescript at the time, but re-forked/copied the security and fun features to strip the AI features.
+- **Icon:** Flower icons created by Icongeek26 - Flaticon (base icon, modified for this bot).
+- Originally forked from [PromptInspectorBot](https://github.com/sALTaccount/PromptInspectorBot) and [KNX Tools](https://github.com/Ktiseos-Nyx/PromptInspectorBot); since stripped to focus on security and community features.

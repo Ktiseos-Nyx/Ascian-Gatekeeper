@@ -1,6 +1,6 @@
-# Terms of Service for PromptInspectorBot-Enhanced
+# Terms of Service for Ascian Gatekeeper
 
-**Last Updated:** June 2, 2026
+**Last Updated:** August 8, 2026
 
 ## The Human-Readable Version
 
@@ -16,17 +16,13 @@ That's basically it. The rest is legal CYA stuff.
 
 ## 1. Acceptance of Terms
 
-By using PromptInspectorBot-Enhanced ("the Bot"), you agree to these Terms of Service ("Terms"). If you don't agree, don't use the Bot. Simple.
+By using Ascian Gatekeeper ("the Bot"), you agree to these Terms of Service ("Terms").
+If you don't agree, don't use the Bot. Simple.
 
 ## 2. What This Bot Does
 
 The Bot provides several services, which server admins can enable or disable **per
 server** via `/settings`:
-
-**Metadata extraction (default):**
-- Reading image files posted in monitored channels
-- Extracting AI generation metadata (prompts, settings, model information)
-- Showing you the results via clickable reactions, slash commands, and context menus
 
 **Automated moderation (anti-spam / anti-scam):**
 - Inspecting messages, senders, and attachments in monitored servers for known scam/spam
@@ -35,15 +31,25 @@ server** via `/settings`:
 - Maintaining a ban registry — shared across servers the same bot instance runs in — so
   repeat offenders and known scam campaigns are caught again
 
-**Optional AI features (opt-in per server, off by default in most cases):**
-- Commands like `/describe`, `/ask`, `/coder`, and `/techsupport` use third-party AI
-  providers (Google Gemini, Anthropic Claude, and/or Groq). A server can run with none of
-  these enabled.
+**Fun & utility commands:**
+- `/decide` — make random choices
+- `/poll` — run yes/no or A/B polls
+- `/wildcard` — generate random art prompts
+- `/interact` — hug, poke, taunt, pat, or high-five other users
+- `/goodnight` — send goodnight messages
+- `/remind` — set one-time or recurring reminders
+- `/qotd` — Question of the Day system
+
+**Admin tools:**
+- `/settings` — per-server configuration panel (moderation, trust, fun features)
+- `/security` — configure anti-spam thresholds, trust/untrust users and roles
+- `/banregistry` — view and manage the cross-server ban and pattern registry
+- `/report` — member reporting with automatic timeout thresholds
 
 **What the Bot does NOT do:**
-- Store your images, metadata, or prompts (see Privacy Policy)
-- Modify your images
-- Sell or profile your data
+- No AI features, no image processing, no metadata extraction
+- No storing of your messages, images, or content outside of moderation records
+- No selling or profiling your data
 
 ## 3. Your Responsibilities
 
@@ -51,23 +57,17 @@ server** via `/settings`:
 - Don't spam the Bot with requests
 - Don't try to break the Bot
 - Don't use the Bot to harass others
-- Don't post illegal content and expect the Bot to process it
+- Don't post illegal content
 
 ### 3.2 Follow Discord's Rules
 - You must comply with Discord's Terms of Service: https://discord.com/terms
 - You must comply with Discord's Community Guidelines: https://discord.com/guidelines
 - Getting banned from Discord is not our problem
 
-### 3.3 Respect Rate Limits
-- The Bot has rate limiting to prevent abuse (5 requests per minute)
-- If you hit rate limits, wait. Don't try to circumvent them.
-- Repeated abuse may result in being blocked from using the Bot
-
-### 3.4 Server Owner Responsibilities
+### 3.3 Server Owner Responsibilities
 If you invite the Bot to your server:
 - You're responsible for configuring it via `/settings` — which channels it monitors,
-  whether automated moderation is on, who is trusted, where alerts go, and which (if any)
-  AI features are enabled
+  whether automated moderation is on, who is trusted, where alerts go
 - You should inform your server members that the Bot is active, that **automated
   moderation may delete messages and ban users**, and that bans contribute to a
   **registry shared across servers the bot runs in**
@@ -79,59 +79,26 @@ If you invite the Bot to your server:
 ### 4.1 Availability
 - The Bot is provided "as-is"
 - We don't guarantee 24/7 uptime
-- The Bot may go offline for maintenance, updates, or because someone tripped over the power cord
+- The Bot may go offline for maintenance, updates, or because someone tripped over the
+  power cord
 - We're not liable if the Bot is down when you need it
 
-### 4.2 Accuracy
-- The Bot extracts metadata from images to the best of its ability
-- We don't guarantee 100% accuracy
-- If the metadata is wrong, weird, or missing, that's probably the fault of the tool that created the image
-- We're not responsible for incorrect or incomplete metadata
-
-### 4.3 Your Content
-- You're responsible for the images you post
-- We don't review, approve, or endorse any content processed by the Bot
+### 4.2 Your Content
+- You're responsible for the content you post
+- We don't review, approve, or endorse any content in your server
 - If you post something illegal, that's on you, not us
 - We may cooperate with law enforcement if required by law
 
-**IMPORTANT - Copyright and Content Ownership:**
-- The Bot reads and displays metadata embedded in images
-- We are NOT responsible for the content of that metadata
-- We are NOT responsible for copyright status of images processed
-- We do NOT verify ownership, licensing, or legality of content
-- DMCA complaints about "stolen art" or unauthorized use are NOT the Bot's responsibility
-- The Bot is a metadata reader, not a content moderator
-- **If you process an image, YOU are responsible for having the right to do so**
-
-### 4.4 API Keys and Credentials
-- You are solely responsible for securing your API keys (Discord bot token, CivitAI API key, etc.)
+### 4.3 API Keys and Credentials
+- You are solely responsible for securing your API keys and bot token
 - We are NOT responsible if you:
-  - Leak your API keys
-  - Commit API keys to public repositories
+  - Leak your credentials
+  - Commit secrets to public repositories
   - Share your credentials with others
   - Experience unauthorized access due to poor key management
 - **NEVER share your bot token or API keys publicly**
-- The Bot provides tools to help secure keys (`.gitignore`, secrets management), but YOU must use them correctly
 
-### 4.5 Metadata Content
-- The Bot extracts and displays metadata "as-is" from image files
-- We are NOT responsible for:
-  - Offensive, inappropriate, or illegal content in metadata
-  - False, misleading, or inaccurate metadata
-  - Personal information accidentally embedded in metadata
-  - Copyright information (or lack thereof) in metadata
-  - Model names, prompts, or other data that may reference copyrighted works
-- **The Bot is a messenger, not the message creator**
-- If metadata contains something problematic, that's an issue with whoever created the image, not the Bot
-
-### 4.6 Third-Party Services
-- The Bot may use third-party services: CivitAI's API for model lookups, and — where a
-  server enables AI features — AI providers (Google Gemini, Anthropic Claude, Groq)
-- We're not responsible for those services or their availability, terms, or handling of
-  content sent to them
-- If a provider is down, the dependent features won't work. Not our fault.
-
-### 4.7 Automated Moderation (Anti-Spam / Anti-Scam)
+### 4.4 Automated Moderation (Anti-Spam / Anti-Scam)
 - The Bot's moderation is **automated and heuristic** — it scores messages for spam/scam
   signals and may delete messages or ban users **without human review**
 - **False positives can happen.** We are not liable for legitimate users caught by
@@ -143,10 +110,8 @@ If you invite the Bot to your server:
 - The ban registry is **shared across servers** the same bot instance runs in; by using
   the Bot, a server participates in this shared protection
 
-### 4.8 Data Loss
-- We don't store your images, metadata, or prompts (see Privacy Policy)
-- If you want to keep metadata, save it yourself
-- We're not responsible if you lose access to data the Bot sent you
+### 4.5 Data Loss
+- We don't store your messages or content (see Privacy Policy)
 - Operational data the Bot does keep (ban registry, server settings) lives in files on
   the host and may be lost on host/redeploy events if not persisted; we don't guarantee
   its retention
@@ -158,21 +123,12 @@ If you invite the Bot to your server:
 - You can view, modify, and self-host the code
 - If you modify the code, you're responsible for your version
 
-### 5.2 Your Content
-- You retain all rights to images you post
-- By using the Bot, you grant us permission to temporarily process your images (for the sole purpose of extracting metadata)
-- We don't claim any ownership of your content
-
-### 5.3 Extracted Metadata
-- Metadata extracted from your images belongs to you
-- The Bot just reads and formats it for display
-- Do whatever you want with the metadata we send you
-
 ## 6. Privacy
 
 See our Privacy Policy (PRIVACY.md) for details on how we handle data.
 
-**TL;DR:** We don't store your images or metadata. We extract, send to you, and delete immediately.
+**TL;DR:** We don't store your messages or content. We run moderation detection, log
+operational events, and keep a ban registry and per-server settings. That's it.
 
 ## 7. Prohibited Uses
 
@@ -209,19 +165,21 @@ If you self-host the Bot:
 ## 10. Limitation of Liability
 
 **IN PLAIN ENGLISH:**
-We provide this Bot for free, as a utility for AI artists. We're not liable for anything that goes wrong. Use at your own risk.
+We provide this Bot for free, as a community security and fun tool. We're not liable for
+anything that goes wrong. Use at your own risk.
 
 **THE LEGAL VERSION:**
-TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE BOT AND ITS DEVELOPERS ARE NOT LIABLE FOR ANY DAMAGES ARISING FROM YOUR USE OF THE BOT, INCLUDING BUT NOT LIMITED TO:
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE BOT AND ITS DEVELOPERS ARE NOT LIABLE FOR
+ANY DAMAGES ARISING FROM YOUR USE OF THE BOT, INCLUDING BUT NOT LIMITED TO:
 - Direct, indirect, incidental, or consequential damages
 - Loss of data, profits, or opportunities
 - Bot downtime or malfunctions
-- Inaccurate or incomplete metadata
-- Actions taken based on Bot-provided information
+- Actions taken based on automated moderation
 
 ## 11. Indemnification
 
-If you do something dumb with the Bot and someone sues us, you agree to cover our legal costs. Don't do dumb things with the Bot.
+If you do something dumb with the Bot and someone sues us, you agree to cover our legal
+costs. Don't do dumb things with the Bot.
 
 ## 12. Changes to These Terms
 
@@ -234,9 +192,7 @@ Continued use of the Bot after changes means you accept the new Terms.
 
 ## 13. Governing Law
 
-These Terms are governed by the laws of [Your Jurisdiction - update as needed].
-
-Disputes will be resolved through:
+These Terms are governed by the laws of your jurisdiction. Disputes will be resolved through:
 - Good-faith discussion first (be cool)
 - Mediation if needed
 - Arbitration or courts as a last resort
@@ -248,14 +204,11 @@ If any part of these Terms is found invalid or unenforceable, the rest still app
 ## 15. Contact
 
 Questions about these Terms?
-- **GitHub Issues:** https://github.com/Ktiseos-Nyx/PromptInspectorBot/issues
-- **Repository:** https://github.com/Ktiseos-Nyx/PromptInspectorBot
+- **GitHub Issues:** https://github.com/Ktiseos-Nyx/Ascian-Gatekeeper/issues
+- **Repository:** https://github.com/Ktiseos-Nyx/Ascian-Gatekeeper
 
 **Prefer Discord support?**
-- **AI-free space** (if you'd rather not be around AI discussion) — Earth and Dusk:
-  https://discord.gg/5t2kYxt7An
-- **AI-friendly space** — Ktiseos Nyx AI&ML:
-  https://discord.gg/HhBSvM9gBY
+- Under Rug Swept Misfits: https://discord.gg/5t2kYxt7An
 
 ---
 
@@ -263,14 +216,16 @@ Questions about these Terms?
 
 **Look, here's the deal:**
 
-This is a free, open-source utility bot for AI artists. It reads metadata from images and shows it to you. That's it.
+This is a free, open-source community bot for Discord servers. It detects scams and spam,
+runs fun commands, and helps communities stay safe. That's it.
 
 - We're not making money off this
-- We're not storing your data
+- We're not storing your messages or content
 - We're not doing anything sketchy
 - We're just trying to make a useful tool
 
-If you use the Bot responsibly, we won't have any problems. If you abuse it, we'll block you. If something breaks, we'll try to fix it, but no promises.
+If you use the Bot responsibly, we won't have any problems. If you abuse it, we'll block
+you. If something breaks, we'll try to fix it, but no promises.
 
 **Use common sense. Be nice. Don't sue us.**
 
@@ -278,6 +233,8 @@ That's the whole philosophy. The legal stuff above is just covering our bases.
 
 ---
 
-**Remember:** These Terms exist to protect both you and us. Read them, understand them, and if you have questions, ask. 💜
+**Remember:** These Terms exist to protect both you and us. Read them, understand them,
+and if you have questions, ask.
 
-*This Terms of Service was written by humans (and Claude), for humans. If you need a lawyer-approved version for commercial use, consult an actual lawyer.*
+*This Terms of Service was written by humans, for humans. If you need a lawyer-approved
+version for commercial use, consult an actual lawyer.*
