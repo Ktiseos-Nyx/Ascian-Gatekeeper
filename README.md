@@ -1,6 +1,6 @@
-# Prompt Inspector 🔎
+# Ascian-Gatekeeper 
 
-A Discord bot that extracts AI image-generation metadata (Forge/A1111, ComfyUI, SwarmUI, and more) **and** keeps servers safe with automated anti-spam/anti-scam moderation. Per-server configurable, with optional AI commands.
+Everything you never wanted in a discord bot, moderation, honeypot, fun commands. A Community bot for the people, with the flair of fandom and the nightmares of the Ancients. Currently under heavy-redevelopment to strip the metadata and AI commands. This bot is not for the faint of heart, if you've ever considered visiting a volcano or touching squapes - this bot is for you and your kin.  Either that or you're just looking for a community lead bot that's janky and is run by the most neurodivergent dev on the planet.
 
 > **Now written in TypeScript / Node.js.** (The original was Python — the codebase has since been fully rewritten.)
 
@@ -9,15 +9,12 @@ A Discord bot that extracts AI image-generation metadata (Forge/A1111, ComfyUI, 
 ## 📑 Table of Contents
 
 - [Features](#features)
-- [Screenshots](#screenshots)
 - [Quick Start](#quick-start)
 - [Data & Persistence](#data--persistence-important-for-hosted-deploys)
 - [Per-Server Settings](#per-server-settings)
 - [How to Use](#how-to-use)
 - [Security System](#security-system)
 - [Guild Allowlist](#guild-allowlist-owner-cost-control)
-- [AI Provider Setup](#ai-provider-setup)
-- [R2 Upload Feature](#r2-upload-feature-optional)
 - [Configuration](#configuration)
 - [Permissions](#permissions)
 - [Troubleshooting](#troubleshooting)
@@ -28,14 +25,6 @@ A Discord bot that extracts AI image-generation metadata (Forge/A1111, ComfyUI, 
 ---
 
 ## Features
-
-### Core
-
-- 🔍 **Comprehensive metadata parsing** — Forge/A1111, 200+ ComfyUI nodes (FLUX, PixArt, Griptape, etc.), SwarmUI, NovelAI, InvokeAI, DrawThings, and more
-- 1️⃣2️⃣3️⃣ **Multiple interaction styles** — numbered emoji reactions, slash commands, or right-click context menus
-- 📦 **Batch handling** — 6+ images collapse to a single 📦 reaction
-- 👥 **PluralKit-aware** — recognises proxied messages (work in progress for some commands)
-- ✨ **JPEG/WebP support** — optional Cloudflare R2 flow for formats Discord strips metadata from
 
 ### Moderation (anti-spam / anti-scam)
 
@@ -52,35 +41,11 @@ A Discord bot that extracts AI image-generation metadata (Forge/A1111, ComfyUI, 
 - ⚙️ **`/settings` panel** — admins toggle features and configure moderation routing per server, no bot-owner involvement
 - 🎛️ Set the alert channel, trusted roles/users, monitored channels, and catcher role — all per server
 
-### Optional AI (off by default in most cases, opt-in per server)
-
-- ✨ **`/describe`** — AI image descriptions (Danbooru tags or natural language)
-- 💬 **`/ask`** — conversational AI with per-user context
-- 💬 **`/coder`** / **`/techsupport`** / **`/promptsupport`** — focused assistants
-- 🔄 **Three providers** — Groq, Claude, and Gemini with automatic fallback
 
 ### Fun & utility
 
 - 🎲 `/decide`, `/poll`, `/wildcard`, `/goodnight`, `/interact`
 - ⏰ `/remind` (one-time or recurring) and a Question-of-the-Day system
-
----
-
-## Screenshots
-
-<table>
-  <tr>
-    <td width="50%"><img src="images/forge-ui-metadata.jpg" alt="Metadata extraction"><br><b>Metadata extraction</b></td>
-    <td width="50%"><img src="images/selection-ui.jpg" alt="Reactions and selection UI"><br><b>Reactions &amp; selection</b></td>
-  </tr>
-  <tr>
-    <td width="50%"><img src="images/ask-command.jpg" alt="/ask"><br><b>AI chat (/ask)</b></td>
-    <td width="50%"><img src="images/coding-command.jpg" alt="/coder"><br><b>Coding help (/coder)</b></td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center"><img src="images/security-function-lulz.jpg" alt="Automated moderation" width="50%"><br><b>Automated moderation</b></td>
-  </tr>
-</table>
 
 ---
 
@@ -143,10 +108,6 @@ docker run -d --env-file .env \
 ```env
 BOT_TOKEN=your_discord_bot_token
 
-# Optional — enable AI features by adding any of these
-GROQ_API_KEY=your_groq_key
-ANTHROPIC_API_KEY=your_claude_key
-GEMINI_API_KEY=your_gemini_key
 
 # Recommended on hosted/ephemeral platforms
 DATA_DIR=/data
@@ -180,7 +141,6 @@ Run **`/settings`** (requires **Manage Server**) to open an interactive panel. I
 | Page | What you configure |
 | ---- | ------------------ |
 | **Moderation** | Anti-scam on/off, alert channel, trusted roles, monitored channels, catcher role |
-| **AI & Metadata** | Toggle metadata extraction and each AI command |
 | **Fun** | Toggle fun commands, `/interact`, QOTD |
 
 Everything is per server and persists immediately. Where a server hasn't set a value, the
@@ -190,22 +150,12 @@ bot falls back to the global environment defaults.
 
 ## How to Use
 
-### Metadata inspection
-
-1. **Post an image** in a monitored channel.
-2. **Click the reactions** the bot adds — 1️⃣–5️⃣ for individual images, 📦 for 6+.
-3. **Or use:** `/metadata <image>`, or right-click an image → **Apps → View Prompt**.
 
 ### Moderation & reports
 
 - Automated moderation runs in monitored servers when **Anti-scam** is enabled.
 - `/report file <user> <reason>` — members report bad actors; enough unique reports auto-times-out the target and alerts mods.
 - `/banregistry` — mods view/manage the cross-server ban + pattern registry.
-
-### AI (if enabled for the server)
-
-- `/ask <question>` — chat with per-user context
-- `/describe <image>` — AI tags/description
 
 ---
 
@@ -255,70 +205,6 @@ owner/env setting, not something server admins can change.
 
 ---
 
-## AI Provider Setup
-
-<details>
-<summary><b>🤖 Groq + Claude + Gemini</b></summary>
-
-Set keys for whichever providers you want; the bot auto-detects them and falls back in
-priority order.
-
-```env
-GROQ_API_KEY=your_groq_key
-ANTHROPIC_API_KEY=your_claude_key
-GEMINI_API_KEY=your_gemini_key
-
-# Try these in order; only available providers are used
-LLM_PROVIDER_PRIORITY=groq,claude,gemini
-```
-
-Defaults (override via env or `config.toml`):
-
-```env
-GROQ_PRIMARY_MODEL=llama-3.3-70b-versatile
-CLAUDE_PRIMARY_MODEL=claude-haiku-4-5-20251001
-GEMINI_PRIMARY_MODEL=gemini-2.5-flash
-```
-
-### Artistic / NSFW content
-
-If Gemini's safety filters block artistic (PG-13/R) descriptions, route `/describe` to
-Claude instead:
-
-```env
-NSFW_PROVIDER_OVERRIDE=claude
-```
-
-</details>
-
----
-
-## R2 Upload Feature (Optional)
-
-<details>
-<summary><b>📤 Cloudflare R2 integration</b></summary>
-
-Discord strips metadata from JPEG/WebP. The optional R2 flow lets users upload those
-formats so the bot can read the metadata server-side.
-
-```env
-R2_ACCOUNT_ID=your_account_id
-R2_ACCESS_KEY_ID=your_access_key
-R2_SECRET_ACCESS_KEY=your_secret_key
-R2_BUCKET_NAME=your_bucket_name
-UPLOADER_URL=https://your-pages.pages.dev/uploader.html
-```
-
-1. Create an R2 bucket in Cloudflare.
-2. Deploy `uploader.html` to Cloudflare Pages and point `UPLOADER_URL` at it.
-3. Set a lifecycle rule (e.g. delete `uploads/` objects after 30 days).
-
-All five variables must be set for the feature to activate.
-
-</details>
-
----
-
 ## Configuration
 
 <details>
@@ -338,11 +224,6 @@ ADMIN_CHANNEL_IDS=123,456          # where alerts go
 TRUSTED_USER_IDS=123,456
 CATCHER_ROLE_ID=...
 BLOCKED_IMAGE_DOMAINS=imgur.com    # optional; blocklisted image hosts checked on embed links
-
-# AI
-GROQ_API_KEY= / ANTHROPIC_API_KEY= / GEMINI_API_KEY=
-LLM_PROVIDER_PRIORITY=groq,claude,gemini
-NSFW_PROVIDER_OVERRIDE=
 
 # Persistence
 DATA_DIR=/data                     # set to a mounted volume on hosted deploys
@@ -366,8 +247,6 @@ DATA_DIR=/data                     # set to a mounted volume on hosted deploys
 <summary><b>Common issues</b></summary>
 
 - **Settings reset after a redeploy** → you're on an ephemeral host without a volume. Set `DATA_DIR` to a mounted volume (see [Data & Persistence](#data--persistence-important-for-hosted-deploys)).
-- **`/describe` or `/ask` not working** → set at least one of `GROQ_API_KEY` / `ANTHROPIC_API_KEY` / `GEMINI_API_KEY`, and make sure the AI feature is enabled in `/settings`.
-- **Images not processed** → check the format/size, and whether the channel is in the server's monitored channels.
 - **Anti-scam catching a legit user** → add them to trusted users/roles via `/settings`; owners are always trusted.
 - **Alerts going nowhere** → set the alert channel in `/settings` (or `ADMIN_CHANNEL_IDS` as a global fallback).
 
@@ -382,7 +261,7 @@ DATA_DIR=/data                     # set to a mounted volume on hosted deploys
 
 If you fork this bot, update anything personal to the upstream project:
 
-- **Support / donation links** — search the codebase and `uploader.html` for our Discord
+- **Support / donation links** — search the codebase for our Discord
   invites and Ko-fi links and replace them with your own.
 - **Bot identity** — the bot works under your own `BOT_TOKEN`; renaming the application or
   bot user in the Discord Developer Portal does not require code changes.
@@ -400,19 +279,15 @@ opening one.
 - 📄 **[Privacy Policy](PRIVACY.md)** — what we process and what we keep
 - 📜 **[Terms of Service](TERMS_OF_SERVICE.md)** — the rules
 
-**Honest summary:** images, prompts, and extracted metadata are **not** stored — they're
-processed and deleted. The bot **does** keep operational data to do its job: a
-moderation/safety record (the cross-server ban registry) and each server's settings.
-Automated moderation can delete messages and ban users. Optional AI commands send content
-to third-party providers (Groq / Claude / Gemini) only when a server has enabled them.
 
 **Support:**
 - AI-free space — Earth and Dusk: <https://discord.gg/5t2kYxt7An>
-- AI-friendly space — Ktiseos Nyx AI&ML: <https://discord.gg/HhBSvM9gBY>
+
 
 ---
 
 ## Credits
 
 - **Icon:** <a href="https://www.flaticon.com/free-icons/flower" title="flower icons">Flower icons created by Icongeek26 - Flaticon</a> (base icon, modified for this bot).
-- Originally a fork of [PromptInspectorBot](https://github.com/sALTaccount/PromptInspectorBot); since rewritten in TypeScript with substantial added features.
+- Base bot was a fork of [PromptInspectorBot](https://github.com/sALTaccount/PromptInspectorBot); since rewritten in TypeScript with substantial added features.
+- Current Bot is a stripped fork of [KNX Tools](https://github.com/Ktiseos-Nyx/PromptInspectorBot); rewritten in Typescript at the time, but re-forked/copied the security and fun features to strip the AI features.
