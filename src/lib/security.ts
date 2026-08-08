@@ -1,28 +1,43 @@
 import crypto from 'crypto';
 import dns from 'dns';
 import net from 'net';
-import { Message, GuildMember, Guild, TextChannel, EmbedBuilder, Colors, PermissionFlagsBits } from 'discord.js';
+import { Message, GuildMember, Guild, TextChannel, EmbedBuilder, Colors, PermissionFlagsBits, type Client } from 'discord.js';
 import type { ResolvedModConfig } from './settings-types';
 import { BLOCKED_IMAGE_DOMAINS } from './config';
 
 // ── Webhook author resolution (PluralKit / Tupperbox) ─────────────────────
+let bottieClient: Client | null = null;
+export function setClient(client: Client): void { bottieClient = client; }
+
+const KNOWN_PROXY_BOT_IDS = new Set(['466378653216014359', '431544605209788416']);
+// PluralKit                                ^^^^^^^^^^^^^^^^^^  Tupperbox ^^^^^^^^^^^^^^^^^^
+
+export type AuthorResolution =
+  | { kind: 'user'; id: string; member: GuildMember | null }
+  | { kind: 'proxy_webhook'; id: string; member: GuildMember }
+  | { kind: 'unknown_webhook' };
+
 // Webhook-proxied messages have message.author as the webhook actor, not the
-// real guild member. The webhook name is set to the proxied user's display name.
-// We strip proxy-bot suffixes and look up the matching guild member.
-//
-// Known proxy-bot application IDs (for optional webhook-owner verification):
-//   PluralKit: 466378653216014359    Tupperbox: 431544605209788416
-export function resolveWebhookAuthor(
+// real guild member. We verify webhook ownership against known proxy-bot
+// application IDs before resolving by display name, and reject ambiguous
+// (multiple-match) lookups.
+export async function resolveWebhookAuthor(
   message: Message,
-): { id: string; member: GuildMember } | null {
+): Promise<{ id: string; member: GuildMember } | null> {
   if (!message.webhookId || !message.guild) return null;
+  if (!message.author.username) return null;
+
+  let verified = false;
+  if (bottieClient) {
+    try {
+      const webhook = await bottieClient.fetchWebhook(message.webhookId);
+      verified = KNOWN_PROXY_BOT_IDS.has(webhook.applicationId ?? '');
+    } catch { /* no MANAGE_WEBHOOKS perm, or webhook not found */ }
+  }
+
+  if (!verified) return null;
 
   const name = message.author.username;
-  if (!name) return null;
-
-  // Strip common proxy-bot suffixes:
-  //   PluralKit:  "Name (abcde)"  — 5-char hash in parens
-  //   Tupperbox:  "Name [tag]"    — bracket format
   const baseName = name
     .replace(/\s*\([a-z0-9]{5}\)$/, '')
     .replace(/\s*\[.+?\]$/, '')
@@ -30,12 +45,15 @@ export function resolveWebhookAuthor(
 
   if (!baseName) return null;
 
-  const member = message.guild.members.cache.find(
+  const matches = message.guild.members.cache.filter(
     m => m.displayName === name || m.displayName === baseName
       || m.user.username === name || m.user.username === baseName,
   );
 
-  return member ? { id: member.id, member } : null;
+  if (matches.size !== 1) return null; // reject ambiguous matches
+
+  const member = matches.first()!;
+  return { id: member.id, member };
 }
 
 interface TrackedMessage { fingerprint: string; channelId: string; timestamp: number; isMedia: boolean; }
@@ -274,27 +292,43 @@ export async function alertAdmins(
 
 // ── Instant ban ───────────────────────────────────────────────────────────────
 
-export async function instantBan(message: Message, reason: string, cfg: ResolvedModConfig, details: string[] = []): Promise<void> {
-  console.error(`🚨 BAN: ${message.author.tag} (${message.author.id}) — ${reason}`);
+export async function instantBan(
+  message: Message, reason: string, cfg: ResolvedModConfig,
+  details: string[] = [],
+  who?: AuthorResolution,
+): Promise<void> {
+  if (!message.guild) return;
+
+  if (who?.kind === 'unknown_webhook') {
+    await message.delete().catch(() => null);
+    await alertAdmins(message.guild, message.author,
+      reason, [...details, 'Unresolvable webhook — not banning'], 'DELETED', cfg);
+    return;
+  }
+
+  const targetId = who?.kind === 'proxy_webhook' ? who.id : message.author.id;
+  const targetMember = who?.kind === 'proxy_webhook' ? who.member : message.member ?? message.author;
+
+  console.error(`🚨 BAN: ${targetMember instanceof GuildMember ? targetMember.user.tag : (targetMember as any).tag} (${targetId}) — ${reason}`);
   if (!message.guild) return;
 
   const me = message.guild.members.me;
   if (!me || !me.permissions.has(PermissionFlagsBits.BanMembers)) {
-    await alertAdmins(message.guild, message.member ?? message.author as any,
+    await alertAdmins(message.guild, targetMember as any,
       reason, [...details, 'Bot missing BAN_MEMBERS permission'], 'FAILED', cfg);
     return;
   }
 
   try {
     await message.delete().catch(() => null);
-    await message.guild.members.ban(message.author.id, {
+    await message.guild.members.ban(targetId, {
       reason: `Auto-ban: ${reason} | ${details.slice(0, 3).join(', ')}`,
       deleteMessageSeconds: 300,
     });
-    await alertAdmins(message.guild, message.member ?? message.author as any, reason, details, 'BANNED', cfg);
+    await alertAdmins(message.guild, targetMember as any, reason, details, 'BANNED', cfg);
   } catch (e) {
     console.error('Ban failed:', e);
-    if (message.guild) await alertAdmins(message.guild, message.member ?? message.author as any, reason, details, 'FAILED', cfg);
+    if (message.guild) await alertAdmins(message.guild, targetMember as any, reason, details, 'FAILED', cfg);
   }
 }
 
@@ -442,8 +476,8 @@ export function hasHoneypotRole(message: Message, cfg: ResolvedModConfig): boole
   return message.member?.roles?.cache?.has(cfg.catcherRoleId) ?? false;
 }
 
-export function isTrusted(message: Message, cfg: ResolvedModConfig): boolean {
-  const effective = resolveWebhookAuthor(message);
+export async function isTrusted(message: Message, cfg: ResolvedModConfig): Promise<boolean> {
+  const effective = await resolveWebhookAuthor(message);
   const userId = effective?.id ?? message.author.id;
   const member = effective?.member ?? message.member;
 
@@ -472,10 +506,11 @@ export function isTrusted(message: Message, cfg: ResolvedModConfig): boolean {
   return false;
 }
 
-export function effectiveAuthor(message: Message): { id: string; member: GuildMember | null } | null {
+export async function effectiveAuthor(message: Message): Promise<AuthorResolution | null> {
   if (message.webhookId) {
-    const resolved = resolveWebhookAuthor(message);
-    return resolved ?? null; // unresolvable webhook → skip security
+    const resolved = await resolveWebhookAuthor(message);
+    if (resolved) return { kind: 'proxy_webhook', id: resolved.id, member: resolved.member };
+    return { kind: 'unknown_webhook' };
   }
-  return { id: message.author.id, member: message.member ?? null };
+  return { kind: 'user', id: message.author.id, member: message.member ?? null };
 }

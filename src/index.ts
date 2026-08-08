@@ -4,6 +4,7 @@ import { registerEvents } from './events';
 import { registerCommands } from './commands';
 import { startScheduler, stopScheduler } from './lib/scheduler';
 import { BOT_TOKEN } from './lib/config';
+import { setClient } from './lib/security';
 
 const token = BOT_TOKEN;
 if (!token) {
@@ -22,6 +23,7 @@ const client = new Client({
   partials: [Partials.Channel],
 });
 
+setClient(client);
 registerEvents(client);
 registerCommands(client);
 
