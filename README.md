@@ -2,9 +2,13 @@
 
 Everything you never wanted in a discord bot, moderation, honeypot, fun commands. A Community bot for the people, with the flair of fandom and the nightmares of the Ancients. Currently under heavy-redevelopment to strip the metadata and AI commands. This bot is not for the faint of heart, if you've ever considered visiting a volcano or touching squapes - this bot is for you and your kin.  Either that or you're just looking for a community lead bot that's janky and is run by the most neurodivergent dev on the planet.
 
-> **Now written in TypeScript / Node.js.** (The original was Python — the codebase has since been fully rewritten.)
 
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/OCA5uC?referralCode=EQxw4P&utm_medium=integration&utm_source=template&utm_campaign=generic)
+
+[![Twitch](https://img.shields.io/badge/Twitch-Follow%20on%20Twitch-9146FF?logo=twitch&style=for-the-badge)](https://twitch.tv/duskfallcrew)
+
+[![Support us on Ko-fi](https://img.shields.io/badge/Support%20us%20on-Ko--Fi-FF5E5B?style=for-the-badge&logo=kofi)](https://ko-fi.com/duskfallcrew) 
+
 
 ## 📑 Table of Contents
 
