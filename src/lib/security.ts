@@ -5,7 +5,28 @@ import { Message, GuildMember, Guild, TextChannel, EmbedBuilder, Colors, Permiss
 import type { ResolvedModConfig } from './settings-types';
 import { BLOCKED_IMAGE_DOMAINS } from './config';
 
-// ── Cross-post tracking ───────────────────────────────────────────────────────
+// ── Webhook author resolution (PluralKit) ────────────────────────────────────
+// Webhook-proxied messages (e.g., PluralKit) have message.author as the webhook
+// actor, not the real guild member. The webhook name is set to the proxied user's
+// display name, optionally with a 5-char hash suffix like "Name (abcde)".
+// We strip that suffix and look up the matching guild member.
+export function resolveWebhookAuthor(
+  message: Message,
+): { id: string; member: GuildMember } | null {
+  if (!message.webhookId || !message.guild) return null;
+
+  const name = message.author.username;
+  if (!name) return null;
+
+  const baseName = name.replace(/\s*\([a-z0-9]{5}\)$/, '').trim();
+
+  const member = message.guild.members.cache.find(
+    m => m.displayName === name || m.displayName === baseName
+      || m.user.username === name || m.user.username === baseName,
+  );
+
+  return member ? { id: member.id, member } : null;
+}
 
 interface TrackedMessage { fingerprint: string; channelId: string; timestamp: number; isMedia: boolean; }
 const userMessages = new Map<string, TrackedMessage[]>();
@@ -412,27 +433,37 @@ export function hasHoneypotRole(message: Message, cfg: ResolvedModConfig): boole
 }
 
 export function isTrusted(message: Message, cfg: ResolvedModConfig): boolean {
+  const effective = resolveWebhookAuthor(message);
+  const userId = effective?.id ?? message.author.id;
+  const member = effective?.member ?? message.member;
+
   // 1. Manually trusted via slash command
-  if (cfg.trustedUserIds.has(message.author.id)) return true;
+  if (cfg.trustedUserIds.has(userId)) return true;
   
   // 2. Literal Server Owner
-  if (message.guild && message.author.id === message.guild.ownerId) return true;
+  if (message.guild && userId === message.guild.ownerId) return true;
 
   // 🛑 THE FIX: Bypass for Native Discord Staff Permissions!
-  if (message.member?.permissions.has(PermissionFlagsBits.Administrator)) return true;
-  if (message.member?.permissions.has(PermissionFlagsBits.ManageMessages)) return true;
-  if (message.member?.permissions.has(PermissionFlagsBits.ManageGuild)) return true;
-  if (message.member?.permissions.has(PermissionFlagsBits.MentionEveryone)) return true;
+  if (member?.permissions.has(PermissionFlagsBits.Administrator)) return true;
+  if (member?.permissions.has(PermissionFlagsBits.ManageMessages)) return true;
+  if (member?.permissions.has(PermissionFlagsBits.ManageGuild)) return true;
+  if (member?.permissions.has(PermissionFlagsBits.MentionEveryone)) return true;
 
   // 3. Manually trusted roles
   if (cfg.trustedRoleIds.size) {
     const roles =
-      message.member?.roles?.cache ??
-      message.guild?.members?.cache?.get(message.author.id)?.roles?.cache;
+      member?.roles?.cache ??
+      message.guild?.members?.cache?.get(userId)?.roles?.cache;
     if (roles) {
       for (const roleId of cfg.trustedRoleIds) if (roles.has(roleId)) return true;
     }
   }
   
   return false;
+}
+
+export function effectiveAuthor(message: Message): { id: string; member: GuildMember | null } {
+  const resolved = resolveWebhookAuthor(message);
+  if (resolved) return resolved;
+  return { id: message.author.id, member: message.member ?? null };
 }
