@@ -1,0 +1,69 @@
+{
+  "hug": {
+    "self": "{user} hugs themselves... self-love is important! 🫂",
+    "target": "{user} gives {target} a massive bear hug! 🫂",
+    "system_member": "{user} gives a big warm hug to {system_member} (from {target}'s system)! 🫂",
+    "gifs": [
+      "https://media.giphy.com/media/3M4NpbLCTxBqU/giphy.gif",
+      "https://media.giphy.com/media/lrr9dHuoUOUzm/giphy.gif",
+      "https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif",
+      "https://media.giphy.com/media/u9BxQbM5bxvSE/giphy.gif",
+      "https://media.giphy.com/media/wSY4wcrHnB0CA/giphy.gif"
+    ]
+  },
+  "poke": {
+    "self": "{user} pokes themselves. Did it work? 👉",
+    "target": "{user} pokes {target}. Boop! 👉",
+    "system_member": "{user} pokes {system_member} (from {target}'s system). Boop! 👉",
+    "gifs": [
+      "https://media.giphy.com/media/1xVfJvX5vHjCSlZt7t/giphy.gif",
+      "https://media.giphy.com/media/pWd3gD577gOqs/giphy.gif",
+      "https://media.giphy.com/media/cxPTvZc6F9jq/giphy.gif",
+      "https://media.giphy.com/media/jNBc5c4UxAvuk/giphy.gif"
+    ]
+  },
+  "taunt": {
+    "self": "{user} played themselves. 🤡",
+    "target": "{user} roasts {target}: \"{taunt_text}\"",
+    "system_member": "{user} roasts {system_member} (from {target}'s system): \"{taunt_text}\"",
+    "messages": [
+      "I bet you eat pizza with a spoon.",
+      "You look like you struggle to open velcro shoes.",
+      "Your internet speed is slower than a snail on a salt lick.",
+      "I'd agree with you, but then we'd both be wrong.",
+      "You are the reason shampoo bottles have instructions.",
+      "I bet you clap when the plane lands.",
+      "Somewhere out there is a tree working very hard to replace the oxygen you waste.",
+      "You have the perfect face for radio.",
+      "Your secrets are safe with me... I wasn't listening.",
+      "I bet you remind the teacher about homework.",
+      "You bring a calculator to a spelling bee."
+    ],
+    "gifs": [
+      "https://media.giphy.com/media/l8tpwRJEwDwEFU5BW0/giphy.gif",
+      "https://media.giphy.com/media/Aff4ryYiacUO4/giphy.gif",
+      "https://media.giphy.com/media/RdKjAkFTNZkWUGyRXF/giphy.gif"
+    ]
+  },
+  "pat": {
+    "self": "{user} pats their own head. Good job! 💆",
+    "target": "{user} gently pats {target} on the head. There there. 💆",
+    "system_member": "{user} gives headpats to {system_member} (from {target}'s system). *pat pat* 💆",
+    "gifs": [
+      "https://media.giphy.com/media/4HP0ddZnNVvYU/giphy.gif",
+      "https://media.giphy.com/media/L2z7dnOduqE6Y/giphy.gif",
+      "https://media.giphy.com/media/ye7OTQgwmVuDy/giphy.gif",
+      "https://media.giphy.com/media/N0CIxcyPLTEv6/giphy.gif"
+    ]
+  },
+  "highfive": {
+    "self": "{user} high-fives the air... awkward. 🙏",
+    "target": "{user} gives {target} a crisp high-five! 🙏",
+    "system_member": "{user} high-fives {system_member} (from {target}'s system)! 🙏",
+    "gifs": [
+      "https://media.giphy.com/media/s4VoCsFz8prxk/giphy.gif",
+      "https://media.giphy.com/media/bFVwIqTcIfUVRlwd5S/giphy.gif",
+      "https://media.giphy.com/media/Z7DaJ3vjTBWsE/giphy.gif"
+    ]
+  }
+}

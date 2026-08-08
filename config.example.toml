@@ -1,0 +1,85 @@
+# ============================================================================
+# SERVER & CHANNEL CONFIGURATION
+# ============================================================================
+
+# List of server (guild) IDs allowed to use this bot
+# Leave empty [] to allow ALL servers (public mode)
+# Get server ID: Right-click server icon → Copy Server ID (need Developer Mode enabled)
+ALLOWED_GUILD_IDS = []  # Example: [123456789, 987654321]
+
+# List of channel IDs where the bot will automatically scan for images
+# Leave empty [] to monitor ALL channels in allowed servers
+# Get channel ID: Right-click channel → Copy Channel ID
+MONITORED_CHANNEL_IDS = []
+
+# ============================================================================
+# FEATURE MANAGEMENT (Per-Server)
+# ============================================================================
+# Feature toggles are now managed per-server via guild_settings.json
+# Administrators can use the /settings command in Discord to configure features
+#
+# Available features (configured via /settings command):
+# - "metadata" (enables emoji reactions, /metadata, and context menu)
+# - "describe" (enables the /describe command and button)
+# - "ask" (enables the /ask command for conversational AI)
+# - "techsupport" (enables the /techsupport command for IT help)
+# - "coder" (enables the /coder command for programming help)
+# - "fun_commands" (enables /decide, /poll, /wildcard commands)
+# - "qotd" (enables Question of the Day feature)
+# - "interact" (enables /interact command for user interactions)
+#
+# See guild_settings.json for current configuration
+
+# ============================================================================
+# R2 UPLOAD & RATE LIMITING
+# ============================================================================
+
+# Ko-fi Supporter Role IDs (for increased upload limits)
+# Users with these roles get 500 uploads/day instead of 100
+# Get role ID: Discord Server Settings → Roles → Right-click role → Copy ID
+# Supports multiple roles (e.g., Ko-fi supporters, admins, moderators)
+SUPPORTER_ROLE_IDS = []  # Example: [123456789, 987654321]
+
+# ============================================================================
+# ADMIN & SECURITY ALERTS
+# ============================================================================
+
+# Admin Channel IDs for security alerts (supports multiple channels/servers)
+# Security events (NSFW attempts, rate limit hits, etc.) will be posted here
+# Get channel ID: Right-click channel → Copy Channel ID
+ADMIN_CHANNEL_IDS = []  # Example: [123456789, 987654321]
+
+# Trusted User IDs who bypass security checks
+# Get user ID: Right-click user → Copy User ID
+TRUSTED_USER_IDS = []  # Example: [123456789, 987654321]
+
+# ============================================================================
+# DM (DIRECT MESSAGE) ACCESS
+# ============================================================================
+
+# User IDs allowed to interact with the bot via DMs
+# Users NOT on this list will receive an auto-response with donation/support info
+# Early Supporters ($5/month donors) get added to this list for DM access
+# Get user ID: Right-click user → Copy User ID
+DM_ALLOWED_USER_IDS = []  # Example: [123456789, 987654321]
+
+# ============================================================================
+# BOT BEHAVIOR
+# ============================================================================
+
+# Whether to add a ⛔ reaction to images with no metadata
+REACT_ON_NO_METADATA = false
+
+# Emojis used for reactions
+EMOJI_METADATA_FOUND = "🔎"
+EMOJI_NO_METADATA = "⛔"
+
+# Maximum size of an image to scan (in bytes)
+SCAN_LIMIT_BYTES = 10485760 # 10MB
+
+# ============================================================================
+# LOGGING & DEBUGGING
+# ============================================================================
+
+# Set to "DEBUG" for more verbose logging
+LOG_LEVEL = "INFO"
