@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { Client, GatewayIntentBits, Events } from 'discord.js';
+import { Client, GatewayIntentBits, Partials, Events } from 'discord.js';
 import { registerEvents } from './events';
 import { registerCommands } from './commands';
 import { startScheduler, stopScheduler } from './lib/scheduler';
@@ -19,6 +19,7 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.DirectMessages,
   ],
+  partials: [Partials.Channel],
 });
 
 registerEvents(client);
