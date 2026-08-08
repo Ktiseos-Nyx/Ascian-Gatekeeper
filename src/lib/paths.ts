@@ -12,6 +12,8 @@ export function repoFile(name: string): string {
 }
 
 export function writeJsonAtomic(target: string, data: unknown): void {
+  const dir = path.dirname(target);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   const tmp = `${target}.${process.pid}.tmp`;
   fs.writeFileSync(tmp, JSON.stringify(data, null, 2));
   fs.renameSync(tmp, target);

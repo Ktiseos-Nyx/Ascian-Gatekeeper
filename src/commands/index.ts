@@ -24,7 +24,17 @@ export function registerCommands(client: Client): void {
   client.once(Events.ClientReady, async (c) => {
     const rest = new REST().setToken(process.env.BOT_TOKEN!);
     const body = slashCommands.map(c => c.data.toJSON());
-    await rest.put(Routes.applicationCommands(c.user.id), { body });
-    console.log(`Synced ${body.length} slash commands`);
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        await rest.put(Routes.applicationCommands(c.user.id), { body });
+        console.log(`Synced ${body.length} slash commands`);
+        return;
+      } catch (err) {
+        console.error(`[commands] sync attempt ${attempt}/3 failed:`, err);
+        if (attempt < 3) await new Promise(r => setTimeout(r, 2000 * attempt));
+      }
+    }
+    console.error('[commands] giving up after 3 attempts — commands not synced');
+    process.exit(1);
   });
 }

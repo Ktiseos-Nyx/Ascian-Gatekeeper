@@ -7,7 +7,7 @@ the patterns used in the codebase — read it once, then use it as a cheat sheet
 
 ## Quick map: where stuff lives
 
-```
+```text
 src/
 ├── index.ts              ← entry point — boots everything, don't touch unless adding a subsystem
 ├── commands/             ← slash commands — one file per command (or command group)
@@ -209,7 +209,7 @@ export function registerEvents(client: Client): void {
 
 When the bot starts (`src/index.ts`):
 
-```
+```text
 1. load env + config   (dotenv/config, BOT_TOKEN, config.toml)
 2. create Client       (intents: Guilds, GuildMessages, MessageContent, GuildMembers, DirectMessages)
 3. registerEvents()    → hooks into messageCreate, guildMemberAdd, guildCreate, ClientReady
