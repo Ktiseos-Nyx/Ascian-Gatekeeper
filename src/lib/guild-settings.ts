@@ -4,12 +4,6 @@ import type { GuildEntry, GuildModeration, ResolvedModConfig, EnvModDefaults } f
 import { CROSS_POST_WINDOW } from './security';
 
 const DEFAULTS: Record<string, boolean> = {
-  ask: false,
-  metadata: true,
-  describe: true,
-  techsupport: false,
-  coder: false,
-  promptsupport: true,
   fun_commands: true,
   qotd: false,
   interact: true,

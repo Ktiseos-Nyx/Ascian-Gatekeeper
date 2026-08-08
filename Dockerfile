@@ -21,4 +21,4 @@ COPY ./wildcards.json ./wildcards.json
 COPY ./interactions.json ./interactions.json
 COPY ./qotd-questions.json ./qotd-questions.json
 
-CMD ["node", "dist/bot.js"]
+CMD ["node", "dist/index.js"]

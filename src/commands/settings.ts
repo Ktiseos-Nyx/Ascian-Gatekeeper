@@ -5,9 +5,9 @@ import {
 import {
   getGuildModeration, getAllGuildSettings, setGuildSetting, setModerationField,
 } from '../lib/guild-settings';
-import {
-  buildSettingsPanel, applyToggleSelection, AI_FEATURES, FUN_FEATURES, type Page,
-} from '../lib/settings-panel';
+import { buildSettingsPanel, type Page } from '../panels/index';
+import { applyToggleSelection } from '../panels/shared';
+import { FUN_FEATURES } from '../panels/fun';
 
 function snapshot(guildId: string) {
   return { toggles: getAllGuildSettings(guildId), moderation: getGuildModeration(guildId) };
@@ -70,12 +70,10 @@ export const settingsCommand = {
         } else if (id === 'settings:catcherRole') {
           const sel = i as AnySelectMenuInteraction;
           setModerationField(guildId, 'catcherRoleId', sel.values[0] ?? null);
-        } else if (id.startsWith('settings:tier:')) {
-          const which = id.split(':')[2] as Page;
-          const tier = which === 'ai' ? AI_FEATURES : FUN_FEATURES;
+        } else if (id === 'settings:tier:fun') {
           const sel = i as AnySelectMenuInteraction;
-          const next = applyToggleSelection(getAllGuildSettings(guildId), tier, [...sel.values]);
-          for (const f of tier) setGuildSetting(guildId, f.value, next[f.value]);
+          const next = applyToggleSelection(getAllGuildSettings(guildId), FUN_FEATURES, [...sel.values]);
+          for (const f of FUN_FEATURES) setGuildSetting(guildId, f.value, next[f.value]);
         }
 
         await (i as ButtonInteraction | AnySelectMenuInteraction).update(
