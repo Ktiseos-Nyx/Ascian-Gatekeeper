@@ -3,7 +3,6 @@ import dns from 'dns';
 import net from 'net';
 import { Message, GuildMember, Guild, TextChannel, EmbedBuilder, Colors, PermissionFlagsBits, type Client } from 'discord.js';
 import type { ResolvedModConfig } from './settings-types';
-import { BLOCKED_IMAGE_DOMAINS } from './config';
 
 // ── Webhook author resolution (PluralKit / Tupperbox) ─────────────────────
 let bottieClient: Client | null = null;
@@ -387,7 +386,7 @@ function isPrivateIP(ip: string): boolean {
   return false;
 }
 
-async function resolveAndCheckURL(rawUrl: string): Promise<string | null> {
+async function resolveAndCheckURL(rawUrl: string, blockedDomains: string[]): Promise<string | null> {
   let host: string;
   try {
     host = new URL(rawUrl).hostname;
@@ -397,8 +396,7 @@ async function resolveAndCheckURL(rawUrl: string): Promise<string | null> {
 
   const lowerHost = host.toLowerCase();
 
-  // Blocked domain check
-  for (const blocked of BLOCKED_IMAGE_DOMAINS) {
+  for (const blocked of blockedDomains) {
     if (lowerHost === blocked || lowerHost.endsWith(`.${blocked}`)) {
       return `Blocked domain: ${host}`;
     }
@@ -421,25 +419,20 @@ async function resolveAndCheckURL(rawUrl: string): Promise<string | null> {
 
 // ── Embed URL magic bytes check ───────────────────────────────────────────────
 
-export async function checkEmbedImages(message: Message): Promise<string | null> {
+export async function checkEmbedImages(message: Message, blockedDomains: string[]): Promise<string | null> {
   for (const embed of message.embeds) {
-    const url = embed.image?.url ?? embed.thumbnail?.url;
-    if (!url) continue;
+    const urls = [embed.image?.url, embed.thumbnail?.url].filter(Boolean) as string[];
+    for (const url of urls) {
+      const ssrfReason = await resolveAndCheckURL(url, blockedDomains);
+      if (ssrfReason) return ssrfReason;
 
-    const ssrfReason = await resolveAndCheckURL(url);
-    if (ssrfReason) return ssrfReason;
-
-    try {
-      const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
-      const buf = Buffer.from(await res.arrayBuffer());
-      // Only ban on a genuinely malicious payload (an executable disguised as an
-      // image). Embed image URLs routinely resolve to non-image content — expired
-      // Discord CDN links return JSON, link previews can return SVG/HTML — and that
-      // is not an attack. Treating "unverifiable" as "malicious" false-bans bots
-      // (e.g. Carlbot log embeds) and real users posting expired links.
-      const exeReason = detectDisguisedExecutable(buf);
-      if (exeReason) return exeReason;
-    } catch { /* network error — skip */ }
+      try {
+        const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+        const buf = Buffer.from(await res.arrayBuffer());
+        const exeReason = detectDisguisedExecutable(buf);
+        if (exeReason) return exeReason;
+      } catch { /* network error — skip */ }
+    }
   }
   return null;
 }
