@@ -13,7 +13,7 @@ let fileConfig: Record<string, any> = {};
 if (fs.existsSync('config.toml')) {
   const raw = fs.readFileSync('config.toml', 'utf8');
   for (const line of raw.split('\n')) {
-    const m = line.match(/^(\w+)\s*=\s*(.+)$/);
+    const m = line.match(/^(\w+)\s*=\s*(.*)$/);
     if (!m) continue;
     const [, key, val] = m;
     if (val.startsWith('[')) {

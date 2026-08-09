@@ -31,9 +31,9 @@ export const securityCommand = {
       .addUserOption(o => o.setName('user').setDescription('User or bot to untrust'))
       .addRoleOption(o => o.setName('role').setDescription('Role to untrust')))
     .addSubcommand(s => s.setName('gifsource').setDescription('Domains treated as GIF sources for media velocity (CSV, default tenor.com,giphy.com,imgur.com,etc.)')
-      .addStringOption(o => o.setName('domains').setDescription('CSV of domain names (lowercase). Use "reset" to clear.')))
+      .addStringOption(o => o.setName('domains').setDescription('CSV of domain names (lowercase). Use "reset" to revert to defaults.')))
     .addSubcommand(s => s.setName('blockedimages').setDescription('Domains blocked in embed image URLs (CSV, attack surfaces to block)')
-      .addStringOption(o => o.setName('domains').setDescription('CSV of domain names (lowercase). Use "reset" to clear.')))
+      .addStringOption(o => o.setName('domains').setDescription('CSV of domain names (lowercase). Use "reset" to revert to defaults.')))
     .addSubcommand(s => s.setName('show').setDescription('Show the current resolved config')),
 
   async execute(interaction: ChatInputCommandInteraction) {

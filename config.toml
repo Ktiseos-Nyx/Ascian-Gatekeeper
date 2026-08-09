@@ -38,7 +38,8 @@ MONITORED_CHANNEL_IDS = []
 
 # CATCHER role ID (self-assignable color role that scammers exploit)
 # Get role ID: Right-click role → Copy Role ID (need Developer Mode enabled)
-CATCHER_ROLE_ID = 
+# Leave empty ("") to disable; configure per-server via /settings panel.
+CATCHER_ROLE_ID = ""
 
 # Trusted user IDs who bypass all security checks (admins, mods, etc.)
 # Get user ID: Right-click user → Copy User ID
